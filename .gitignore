@@ -1,3 +1,7 @@
+# Dist Files
+.env
+docker-composer.override.yml
+
 # compiled output
 /dist
 /node_modules
@@ -25,6 +29,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+.cache/*
 
 # IDE - VSCode
 .vscode/*

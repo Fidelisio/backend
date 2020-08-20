@@ -1,0 +1,23 @@
+version: "3.7"
+
+services:
+    wait:
+        image: martin/wait
+
+    mongodb:
+        image: mongo:4.4
+        ports:
+            - 27017:27017
+
+    node:
+        image: node:13-alpine
+        init: true
+        working_dir: /srv
+        # command: yarn encore dev --watch # Uncomment and add the "node" service in "make start" in order to watch webpack updates
+        environment:
+            - NODE_SASS_PLATFORM=alpine
+            - NODE_ENV=dev
+        volumes:
+            - ./:/srv
+        ports:
+            - 3001:3001
