@@ -18,4 +18,8 @@ export class CustomerRepository {
 
         return newCustomer;
     }
+
+    public async findByName(name: string): Promise<Customer> {
+        return await this.customerModel.findOne({ name });
+    }
 }

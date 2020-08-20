@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { UserStatus } from 'src/CRM/Domain/user.model';
+import { UserStatus } from '../../CRM/Domain/user.model';
 
 export const UserSchema = new mongoose.Schema({
     username: { type: String, unique: true },

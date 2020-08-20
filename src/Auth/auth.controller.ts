@@ -1,4 +1,4 @@
-import { Controller, HttpStatus, HttpException, HttpCode, Body, Post } from "@nestjs/common";
+import { Controller, HttpStatus, HttpException, HttpCode, Body, Post, Get } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 
 @Controller()
@@ -14,5 +14,10 @@ export class AuthController {
         }
 
         return accessToken;
+    }
+
+    @Get('public/auth')
+    public hello() {
+        return 'hello';
     }
 }
