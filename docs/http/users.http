@@ -1,0 +1,24 @@
+POST http://localhost:3001/public/auth/login
+content-type: application/json
+
+{
+    "username": "admin",
+    "password": "password"
+}
+
+###
+
+GET http://localhost:3001/users
+
+###
+
+POST http://localhost:3001/customers
+content-type: application/json
+
+{
+    "nadqwdme": "fmeynard customer",
+    "toto": "tyolo"
+}
+
+###
+GET http://localhost:3001/fadmin/init
