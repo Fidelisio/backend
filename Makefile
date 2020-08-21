@@ -50,9 +50,6 @@ ps:
 logs:
 	docker-compose logs -f --tail 10
 
-clear-cache:
-	rm -rf var/*
-
 clean: clear-cache
 	docker-compose down -v --remove-orphans || true
 	rm -f helpme.log
@@ -69,7 +66,8 @@ init-db: start-db
 	bin/tools bin/post-install-dev.sh
 
 fix-cs:
-	bin/node-tools npm run lint:fix
+	bin/tools npm run lint --fix
+	bin/tools npm run format
 
 #
 # TESTS
@@ -81,7 +79,10 @@ test-cs:
 	bin/node-tools npm run lint
 
 test-e2e:
-	bin/tools sh -c "APP_DEBUG=1 APP_ENV=test bin/console c:w"
+	npm run test:e2e
+
+test-e2e-watch:
+	npm run test:e2e:watch
 
 
 #

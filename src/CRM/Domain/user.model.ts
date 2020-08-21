@@ -1,10 +1,10 @@
-import { Document } from "mongoose";
-import { Customer } from "CRM/Domain/customer.model";
+import { Customer } from 'CRM/Domain/customer.model';
+import { Document } from 'mongoose';
 
 export enum UserStatus {
     ACTIVE = 'ACTIVE',
     DISABLED = 'DISABLED',
-    DELETED = 'DELETED'
+    DELETED = 'DELETED',
 }
 
 export class User extends Document {
