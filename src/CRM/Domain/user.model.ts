@@ -1,5 +1,5 @@
 import { Document } from "mongoose";
-import { Customer } from "./customer.model";
+import { Customer } from "CRM/Domain/customer.model";
 
 export enum UserStatus {
     ACTIVE = 'ACTIVE',

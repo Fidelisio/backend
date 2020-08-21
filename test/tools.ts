@@ -1,14 +1,14 @@
 import { ModuleMetadata, INestApplication, INestApplicationContext } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { InfrastructureModule } from "../src/Infrastructure/infrastructure.module";
-import { AuthModule } from "../src/Auth/auth.module";
-import { CrmModule } from "../src/CRM/crm.module";
-import { Customer, CustomerStatus } from "../src/CRM/Domain/customer.model";
-import { User, UserStatus } from "../src/CRM/Domain/user.model";
-import { CustomerRepository } from "../src/Infrastructure/persistence/customers.repository";
-import { UsersRepository } from "../src/Infrastructure/persistence/users.repository";
-import { AuthService } from "../src/Auth/auth.service";
+import { InfrastructureModule } from "Infrastructure/infrastructure.module";
+import { AuthModule } from "Auth/auth.module";
+import { CrmModule } from "CRM/crm.module";
+import { Customer, CustomerStatus } from "CRM/Domain/customer.model";
+import { User, UserStatus } from "CRM/Domain/user.model";
+import { CustomerRepository } from "Infrastructure/persistence/customers.repository";
+import { UsersRepository } from "Infrastructure/persistence/users.repository";
+import { AuthService } from "Auth/auth.service";
 
 async function findOrCreateTestCustomers(customerRepository: CustomerRepository): Promise<Customer[]> {
     const customersData = [

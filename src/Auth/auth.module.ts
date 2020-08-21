@@ -2,9 +2,9 @@ import { Module, Global } from "@nestjs/common";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
-import { AuthService } from "./auth.service";
-import { JwtStrategy } from "./jwt.strategy";
-import { AuthController } from "./auth.controller";
+import { AuthService } from "Auth/auth.service";
+import { JwtStrategy } from "Auth/jwt.strategy";
+import { AuthController } from "Auth/auth.controller";
 
 @Global()
 @Module({

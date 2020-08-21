@@ -1,9 +1,9 @@
 import { Module, Global } from "@nestjs/common";
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from "./schemas/user.schema";
-import { CustomerSchema } from "./schemas/customer.schema";
-import { CustomerRepository } from "./persistence/customers.repository";
-import { UsersRepository } from "./persistence/users.repository";
+import { UserSchema } from "Infrastructure/schemas/user.schema";
+import { CustomerSchema } from "Infrastructure/schemas/customer.schema";
+import { CustomerRepository } from "Infrastructure/persistence/customers.repository";
+import { UsersRepository } from "Infrastructure/persistence/users.repository";
 
 @Global()
 @Module({

@@ -2,8 +2,8 @@ import { INestApplication, ModuleMetadata, ValidationPipe } from '@nestjs/common
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { getTestingModuleMetadata, initTestData } from '../tools';
-import { CustomerStatus } from '../../src/CRM/Domain/customer.model';
-import { User, UserStatus } from '../../src/CRM/Domain/user.model';
+import { CustomerStatus } from 'CRM/Domain/customer.model';
+import { User, UserStatus } from 'CRM/Domain/user.model';
 
 describe('AuthController (e2e)', () => {
     let app: INestApplication;

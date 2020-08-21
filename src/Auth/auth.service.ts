@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { LoginDTO } from './login.dto';
-import { UserStatus } from '../CRM/Domain/user.model';
-import { CustomerStatus } from '../CRM/Domain/customer.model';
-import { UsersRepository } from '../Infrastructure/persistence/users.repository';
+import { LoginDTO } from 'Auth/login.dto';
+import { UserStatus } from 'CRM/Domain/user.model';
+import { CustomerStatus } from 'CRM/Domain/customer.model';
+import { UsersRepository } from 'Infrastructure/persistence/users.repository';
 
 
 @Injectable()

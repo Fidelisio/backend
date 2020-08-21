@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../../CRM/Domain/user.model';
+import { User } from 'CRM/Domain/user.model';
 
 export class UsersRepository {
     constructor(@InjectModel('UserModel') private userModel: Model<User>) { }

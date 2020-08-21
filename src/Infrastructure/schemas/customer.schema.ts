@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import { CustomerStatus } from '../../CRM/Domain/customer.model';
+import { CustomerStatus } from 'CRM/Domain/customer.model';
 
 export const CustomerSchema = new mongoose.Schema({
     name: { type: String, unique: true },

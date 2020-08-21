@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
-import { AppController } from './app.controller';
+import { AppController } from 'app.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CrmModule } from './CRM/crm.module';
-import { InfrastructureModule } from './Infrastructure/infrastructure.module';
-import { AuthModule } from './Auth/auth.module';
+import { CrmModule } from 'CRM/crm.module';
+import { InfrastructureModule } from 'Infrastructure/infrastructure.module';
+import { AuthModule } from 'Auth/auth.module';
 
 @Module({
     imports: [

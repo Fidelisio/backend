@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Customer } from "../../CRM/Domain/customer.model";
+import { Customer } from "CRM/Domain/customer.model";
 
 @Injectable()
 export class CustomerRepository {
