@@ -1,9 +1,9 @@
-import { Document } from "mongoose";
+import { Document } from 'mongoose';
 
 export enum CustomerStatus {
     ACTIVE = 'ACTIVE',
     DISABLED = 'DISABLED',
-    DELETED = 'DELETED'
+    DELETED = 'DELETED',
 }
 
 export class Customer extends Document {

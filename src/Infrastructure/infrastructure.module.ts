@@ -1,22 +1,19 @@
-import { Module, Global } from "@nestjs/common";
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from "./schemas/user.schema";
-import { CustomerSchema } from "./schemas/customer.schema";
-import { CustomerRepository } from "./persistence/customers.repository";
-import { UsersRepository } from "./persistence/users.repository";
+import { CustomerRepository } from 'Infrastructure/persistence/customers.repository';
+import { UsersRepository } from 'Infrastructure/persistence/users.repository';
+import { CustomerSchema } from 'Infrastructure/schemas/customer.schema';
+import { UserSchema } from 'Infrastructure/schemas/user.schema';
 
 @Global()
 @Module({
     imports: [
         MongooseModule.forFeature([
             { name: 'CustomerModel', schema: CustomerSchema },
-            { name: 'UserModel', schema: UserSchema }
-        ])
+            { name: 'UserModel', schema: UserSchema },
+        ]),
     ],
-    providers: [
-        CustomerRepository,
-        UsersRepository
-    ],
-    exports: [CustomerRepository, UsersRepository]
+    providers: [CustomerRepository, UsersRepository],
+    exports: [CustomerRepository, UsersRepository],
 })
-export class InfrastructureModule { }
+export class InfrastructureModule {}

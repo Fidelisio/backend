@@ -1,35 +1,60 @@
-import { INestApplication, ModuleMetadata, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { CustomerStatus } from 'CRM/Domain/customer.model';
+import { User, UserStatus } from 'CRM/Domain/user.model';
 import * as request from 'supertest';
+
 import { getTestingModuleMetadata, initTestData } from '../tools';
-import { CustomerStatus } from '../../src/CRM/Domain/customer.model';
-import { User, UserStatus } from '../../src/CRM/Domain/user.model';
 
 describe('AuthController (e2e)', () => {
     let app: INestApplication;
-    let testUsers: { active: User, disabled: User, deleted: User, disabledCustomer: User, deletedCustomer: User };
+    let testUsers: {
+        active: User;
+        disabled: User;
+        deleted: User;
+        disabledCustomer: User;
+        deletedCustomer: User;
+    };
 
     beforeAll(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule(getTestingModuleMetadata()).compile();
+        const moduleFixture: TestingModule = await Test.createTestingModule(
+            getTestingModuleMetadata(),
+        ).compile();
 
         app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(new ValidationPipe({
-            transform: true,
-            whitelist: true,
-        }));
+        app.useGlobalPipes(
+            new ValidationPipe({
+                transform: true,
+                whitelist: true,
+            }),
+        );
 
         await app.init();
 
         const { customers, users } = await initTestData(app);
-        const deletedCustomer = customers.find(customer => customer.status === CustomerStatus.DELETED);
-        const disabledCustomer = customers.find(customer => customer.status === CustomerStatus.DISABLED);
+        const deletedCustomer = customers.find(
+            (customer) => customer.status === CustomerStatus.DELETED,
+        );
+        const disabledCustomer = customers.find(
+            (customer) => customer.status === CustomerStatus.DISABLED,
+        );
 
         testUsers = {
-            active: users.find((user: User) => user.status === UserStatus.ACTIVE),
-            disabled: users.find((user: User) => user.status === UserStatus.DISABLED),
-            deleted: users.find((user: User) => user.status === UserStatus.DELETED),
-            disabledCustomer: users.find((user: User) => user.customer._id.equals(disabledCustomer.id)),
-            deletedCustomer: users.find((user: User) => user.customer._id.equals(deletedCustomer.id))
+            active: users.find(
+                (user: User) => user.status === UserStatus.ACTIVE,
+            ),
+            disabled: users.find(
+                (user: User) => user.status === UserStatus.DISABLED,
+            ),
+            deleted: users.find(
+                (user: User) => user.status === UserStatus.DELETED,
+            ),
+            disabledCustomer: users.find((user: User) =>
+                user.customer._id.equals(disabledCustomer.id),
+            ),
+            deletedCustomer: users.find((user: User) =>
+                user.customer._id.equals(deletedCustomer.id),
+            ),
         };
     });
 
@@ -46,7 +71,7 @@ describe('AuthController (e2e)', () => {
                 .post('/public/auth/login')
                 .send({
                     username: testUsers.active.username,
-                    password: 'password'
+                    password: 'password',
                 })
                 .expect(200);
         });
@@ -58,7 +83,6 @@ describe('AuthController (e2e)', () => {
                     .send({ password: 'bad>password' })
                     .expect(400);
             });
-
 
             it('missing password', () => {
                 return request(app.getHttpServer())
@@ -72,7 +96,7 @@ describe('AuthController (e2e)', () => {
                     .post('/public/auth/login')
                     .send({
                         username: testUsers.active.username,
-                        password: 'bad>password'
+                        password: 'bad>password',
                     })
                     .expect(400);
             });
@@ -82,7 +106,7 @@ describe('AuthController (e2e)', () => {
                     .post('/public/auth/login')
                     .send({
                         username: 'user2@donotexists.com',
-                        password: 'password'
+                        password: 'password',
                     })
                     .expect(400);
             });
@@ -92,7 +116,7 @@ describe('AuthController (e2e)', () => {
                     .post('/public/auth/login')
                     .send({
                         username: testUsers.disabled.username,
-                        password: 'password'
+                        password: 'password',
                     })
                     .expect(400);
             });
@@ -102,7 +126,7 @@ describe('AuthController (e2e)', () => {
                     .post('/public/auth/login')
                     .send({
                         username: testUsers.deleted.username,
-                        password: 'password'
+                        password: 'password',
                     })
                     .expect(400);
             });
@@ -112,7 +136,7 @@ describe('AuthController (e2e)', () => {
                     .post('/public/auth/login')
                     .send({
                         username: testUsers.disabledCustomer.username,
-                        password: 'password'
+                        password: 'password',
                     })
                     .expect(400);
             });
@@ -122,7 +146,7 @@ describe('AuthController (e2e)', () => {
                     .post('/public/auth/login')
                     .send({
                         username: testUsers.deletedCustomer.username,
-                        password: 'password'
+                        password: 'password',
                     })
                     .expect(400);
             });

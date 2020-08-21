@@ -1,6 +1,15 @@
 {
-  "moduleFileExtensions": ["js", "json", "ts"],
+  "moduleFileExtensions": [
+    "js",
+    "json",
+    "ts"
+  ],
   "rootDir": ".",
+  "moduleNameMapper": {
+    "^CRM/(.*)$": "<rootDir>/../src/CRM/$1",
+    "^Auth/(.*)$": "<rootDir>/../src/Auth/$1",
+    "^Infrastructure/(.*)$": "<rootDir>/../src/Infrastructure/$1"
+  },
   "testEnvironment": "node",
   "testRegex": ".e2e-spec.ts$",
   "transform": {

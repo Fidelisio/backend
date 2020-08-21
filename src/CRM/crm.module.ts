@@ -1,7 +1,7 @@
-import { Module } from "@nestjs/common";
-import { HttpModule } from "./Http/http.module";
+import { Module } from '@nestjs/common';
+import { HttpModule } from 'CRM/Http/http.module';
 
 @Module({
-    imports: [HttpModule]
+    imports: [HttpModule],
 })
-export class CrmModule { }
+export class CrmModule {}
