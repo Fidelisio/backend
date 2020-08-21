@@ -1,27 +1,36 @@
-import { INestApplication, ModuleMetadata } from '@nestjs/common';
+import { INestApplication, ModuleMetadata, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { getTestingModuleMetadata, initTestData } from '../tools';
-import { Customer } from '../../src/CRM/Domain/customer.model';
-import { User } from '../../src/CRM/Domain/user.model';
-
-
+import { CustomerStatus } from '../../src/CRM/Domain/customer.model';
+import { User, UserStatus } from '../../src/CRM/Domain/user.model';
 
 describe('AuthController (e2e)', () => {
     let app: INestApplication;
-    let testCustomer: Customer;
-    let testUser: User;
+    let testUsers: { active: User, disabled: User, deleted: User, disabledCustomer: User, deletedCustomer: User };
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule(getTestingModuleMetadata()).compile();
 
         app = moduleFixture.createNestApplication();
+        app.useGlobalPipes(new ValidationPipe({
+            transform: true,
+            whitelist: true,
+        }));
 
         await app.init();
 
-        const data = await initTestData(app);
-        testCustomer = data.customer;
-        testUser = data.user;
+        const { customers, users } = await initTestData(app);
+        const deletedCustomer = customers.find(customer => customer.status === CustomerStatus.DELETED);
+        const disabledCustomer = customers.find(customer => customer.status === CustomerStatus.DISABLED);
+
+        testUsers = {
+            active: users.find((user: User) => user.status === UserStatus.ACTIVE),
+            disabled: users.find((user: User) => user.status === UserStatus.DISABLED),
+            deleted: users.find((user: User) => user.status === UserStatus.DELETED),
+            disabledCustomer: users.find((user: User) => user.customer._id.equals(disabledCustomer.id)),
+            deletedCustomer: users.find((user: User) => user.customer._id.equals(deletedCustomer.id))
+        };
     });
 
     it('/ (GET)', () => {
@@ -36,34 +45,89 @@ describe('AuthController (e2e)', () => {
             return request(app.getHttpServer())
                 .post('/public/auth/login')
                 .send({
-                    username: 'user@test.com',
+                    username: testUsers.active.username,
                     password: 'password'
                 })
                 .expect(200);
         });
 
-        it('should fail with a wrong password', () => {
-            return request(app.getHttpServer())
-                .post('/public/auth/login')
-                .send({
-                    username: 'user@test.com',
-                    password: 'bad>password'
-                })
-                .expect(400);
-        });
+        describe('should fail due to', () => {
+            it('missing username', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({ password: 'bad>password' })
+                    .expect(400);
+            });
 
-        it('should fail with a non-existing user', () => {
-            return request(app.getHttpServer())
-                .post('/public/auth/login')
-                .send({
-                    username: 'user2@test2.com',
-                    password: 'password'
-                })
-                .expect(400);
-        });
 
-        // @TODO : disabledCustomer , disabledUser
-    })
+            it('missing password', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({ username: testUsers.active.username })
+                    .expect(400);
+            });
+
+            it('wrong password', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({
+                        username: testUsers.active.username,
+                        password: 'bad>password'
+                    })
+                    .expect(400);
+            });
+
+            it('non-existing user', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({
+                        username: 'user2@donotexists.com',
+                        password: 'password'
+                    })
+                    .expect(400);
+            });
+
+            it('disabled user', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({
+                        username: testUsers.disabled.username,
+                        password: 'password'
+                    })
+                    .expect(400);
+            });
+
+            it('deleted user', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({
+                        username: testUsers.deleted.username,
+                        password: 'password'
+                    })
+                    .expect(400);
+            });
+
+            it('disabled customer', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({
+                        username: testUsers.disabledCustomer.username,
+                        password: 'password'
+                    })
+                    .expect(400);
+            });
+
+            it('deleted customer', () => {
+                return request(app.getHttpServer())
+                    .post('/public/auth/login')
+                    .send({
+                        username: testUsers.deletedCustomer.username,
+                        password: 'password'
+                    })
+                    .expect(400);
+            });
+        });
+    });
 
     afterAll(async () => {
         await app.close();

@@ -10,40 +10,72 @@ import { CustomerRepository } from "../src/Infrastructure/persistence/customers.
 import { UsersRepository } from "../src/Infrastructure/persistence/users.repository";
 import { AuthService } from "../src/Auth/auth.service";
 
-async function findOrCreateTestCustomer(customerRepository: CustomerRepository): Promise<Customer> {
-    let customer = await customerRepository.findByName('test.customer');
-    if (!customer) {
-        customer = await customerRepository.insertOne({
-            name: 'test.customer',
-            status: CustomerStatus.ACTIVE,
-            isAdmin: false
-        } as Customer)
+async function findOrCreateTestCustomers(customerRepository: CustomerRepository): Promise<Customer[]> {
+    const customersData = [
+        { name: 'test.customer', status: CustomerStatus.ACTIVE },
+        { name: 'test.disabled.customer', status: CustomerStatus.DISABLED },
+        { name: 'test.deleted.customer', status: CustomerStatus.DELETED },
+    ];
+
+    let customers = [];
+    for (let customerData of customersData) {
+        let customer = await customerRepository.findByName(customerData.name);
+        if (!customer) {
+            customer = await customerRepository.insertOne({
+                name: customerData.name,
+                status: customerData.status,
+                isAdmin: false
+            } as Customer)
+        }
+
+        customers.push(customer);
     }
 
-    return customer;
+    return customers;
 }
 
-async function findOrCreateTestUser(customer: Customer, userRepository: UsersRepository, authService: AuthService): Promise<User> {
-    let user = await userRepository.findByUsername('user@test.com');
-    if (!user) {
-        user = await userRepository.insertOne({
-            username: 'user@test.com',
-            password: authService.generatePassword('password'),
-            status: UserStatus.ACTIVE,
-            customer
-        } as User);
+async function findOrCreateTestUsers(testCustomers: Customer[], userRepository: UsersRepository, authService: AuthService): Promise<User[]> {
+    const passwordHash = authService.generatePassword('password');
+
+    const customers = {
+        active: testCustomers.find(current => current.status === CustomerStatus.ACTIVE),
+        disabled: testCustomers.find(current => current.status === CustomerStatus.DISABLED),
+        deleted: testCustomers.find(current => current.status === CustomerStatus.DELETED),
     }
 
-    return user;
+    const usersData = [
+        { username: 'user@test.com', status: UserStatus.ACTIVE, customer: customers.active },
+        { username: 'user.disabled@test.com', status: UserStatus.DISABLED, customer: customers.active },
+        { username: 'user.deleted@test.com', status: UserStatus.DELETED, customer: customers.active },
+        { username: 'user.disabled.customer@test.com', status: UserStatus.ACTIVE, customer: customers.disabled },
+        { username: 'user.deleted.customer@test.com', status: UserStatus.ACTIVE, customer: customers.deleted },
+    ]
+
+    let users = [];
+    for (let userData of usersData) {
+        let user = await userRepository.findByUsername(userData.username);
+        if (!user) {
+            user = await userRepository.insertOne({
+                username: userData.username,
+                password: passwordHash,
+                status: userData.status,
+                customer: userData.customer
+            } as User);
+        }
+
+        users.push(user);
+    }
+
+    return users;
 }
 
-export async function initTestData(app: INestApplication): Promise<{ customer: Customer, user: User }> {
+export async function initTestData(app: INestApplication): Promise<{ customers: Customer[], users: User[] }> {
     const infraModule: INestApplicationContext = app.select<InfrastructureModule>(InfrastructureModule);
 
-    const customer = await findOrCreateTestCustomer(infraModule.get(CustomerRepository));
-    const user = await findOrCreateTestUser(customer, infraModule.get(UsersRepository), app.select(AuthModule).get(AuthService));
+    const customers = await findOrCreateTestCustomers(infraModule.get(CustomerRepository));
+    const users = await findOrCreateTestUsers(customers, infraModule.get(UsersRepository), app.select(AuthModule).get(AuthService));
 
-    return { customer, user };
+    return { customers, users };
 }
 
 export function getTestingModuleMetadata(): ModuleMetadata {

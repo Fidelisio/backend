@@ -1,5 +1,6 @@
 import { Controller, HttpStatus, HttpException, HttpCode, Body, Post, Get } from "@nestjs/common";
 import { AuthService } from "./auth.service";
+import { LoginDTO } from "./login.dto";
 
 @Controller()
 export class AuthController {
@@ -7,7 +8,7 @@ export class AuthController {
 
     @Post('public/auth/login')
     @HttpCode(200)
-    public async login(@Body() body: any) {
+    public async login(@Body() body: LoginDTO) {
         const accessToken = await this.authService.login(body);
         if (null === accessToken) {
             throw new HttpException('invalid.credentials', HttpStatus.BAD_REQUEST);

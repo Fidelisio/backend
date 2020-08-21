@@ -1,6 +1,6 @@
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { User } from 'src/CRM/Domain/user.model';
+import { User } from '../../CRM/Domain/user.model';
 
 export class UsersRepository {
     constructor(@InjectModel('UserModel') private userModel: Model<User>) { }
@@ -16,7 +16,12 @@ export class UsersRepository {
         return this.userModel.find().exec();
     }
 
-    public async findByUsername(username: string): Promise<User> {
-        return this.userModel.findOne({ username }).exec();
+    public async findByUsername(username: string, withCustomer: boolean = false): Promise<User> {
+        let req = this.userModel.findOne({ username });
+        if (withCustomer) {
+            req.populate('customer');
+        }
+
+        return req.exec();
     }
 }
