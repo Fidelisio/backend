@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CustomerStatus, ICustomer } from 'CRM/models/customer.model';
-import { CustomerRepository } from 'Infrastructure/persistence/customers.repository';
+import { ICustomerRepository } from 'CRM/repositories/customers.repository';
+
+export abstract class ICustomersService {
+    public abstract async create(data: Partial<ICustomer>): Promise<ICustomer>;
+}
 
 @Injectable()
-export class CustomersService {
-    constructor(private readonly customerRepository: CustomerRepository) {}
+export class CustomersService implements ICustomersService {
+    constructor(private readonly customerRepository: ICustomerRepository) {}
 
     public async create(customerData: Partial<ICustomer>): Promise<ICustomer> {
         return this.customerRepository.insertOne({

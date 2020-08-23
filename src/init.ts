@@ -4,8 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AuthModule } from './Auth/auth.module';
 import { AuthService } from './Auth/auth.service';
-import { Customer, CustomerStatus } from './CRM/models/customer.model';
-import { User, UserStatus } from './CRM/models/user.model';
+import { CustomerStatus, ICustomer } from './CRM/models/customer.model';
+import { IUser, UserStatus } from './CRM/models/user.model';
 import { InfrastructureModule } from './Infrastructure/infrastructure.module';
 import { CustomerRepository } from './Infrastructure/persistence/customers.repository';
 import { UsersRepository } from './Infrastructure/persistence/users.repository';
@@ -41,7 +41,7 @@ async function init(app: INestApplicationContext) {
         name: 'Admin Customer',
         status: CustomerStatus.ACTIVE,
         isAdmin: true,
-    } as Customer);
+    } as ICustomer);
 
     console.log('customer inserted');
 
@@ -50,7 +50,7 @@ async function init(app: INestApplicationContext) {
         password: authService.generatePassword('password'),
         status: UserStatus.ACTIVE,
         customer: customer,
-    } as User);
+    } as IUser);
 }
 
 bootstrap();

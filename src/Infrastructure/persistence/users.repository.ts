@@ -1,26 +1,28 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { IUser, User } from 'CRM/models/user.model';
+import { IUser } from 'CRM/models/user.model';
+import { IUsersRepository } from 'CRM/repositories/users.repository';
+import { UserModel } from 'Infrastructure/persistence/schemas/user.schema';
 import { Model } from 'mongoose';
 
-export class UsersRepository {
-    constructor(@InjectModel('UserModel') private userModel: Model<User>) {}
+export class UsersRepository implements IUsersRepository {
+    constructor(@InjectModel(UserModel.name) private userModel: Model<UserModel>) {}
 
-    public async insertOne(user: IUser): Promise<IUser> {
-        const newUser = new this.userModel(user);
-
-        return newUser.save();
-    }
-
-    public async findAll(): Promise<User[]> {
+    public async findAll(): Promise<IUser[]> {
         return this.userModel.find().exec();
     }
 
-    public async findByUsername(username: string, withCustomer = false): Promise<User> {
+    public async findByUsername(username: string, withCustomer = false): Promise<IUser> {
         const req = this.userModel.findOne({ username });
         if (withCustomer) {
             req.populate('customer');
         }
 
         return req.exec();
+    }
+
+    public async insertOne(user: IUser): Promise<IUser> {
+        const newUser = new this.userModel(user);
+
+        return newUser.save();
     }
 }

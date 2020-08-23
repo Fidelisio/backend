@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Customer, ICustomer } from 'CRM/models/customer.model';
+import { ICustomer } from 'CRM/models/customer.model';
+import { ICustomerRepository } from 'CRM/repositories/customers.repository';
+import { CustomerModel } from 'Infrastructure/persistence/schemas/customer.schema';
 import { Model } from 'mongoose';
 
-@Injectable()
-export class CustomerRepository {
-    constructor(@InjectModel('CustomerModel') private customerModel: Model<Customer>) {}
+export class CustomerRepository implements ICustomerRepository {
+    constructor(@InjectModel(CustomerModel.name) private customerModel: Model<CustomerModel>) {}
 
     // only used for the init process, do not re-use!
     public async findFirst(): Promise<ICustomer> {

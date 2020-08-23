@@ -4,12 +4,12 @@ import { LoginDTO } from 'Auth/login.dto';
 import * as bcrypt from 'bcrypt';
 import { CustomerStatus } from 'CRM/models/customer.model';
 import { UserStatus } from 'CRM/models/user.model';
-import { UsersRepository } from 'Infrastructure/persistence/users.repository';
+import { IUsersRepository } from 'CRM/repositories/users.repository';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly userRepository: UsersRepository,
+        private readonly userRepository: IUsersRepository,
         private readonly jwtService: JwtService,
     ) {}
 
