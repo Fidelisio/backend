@@ -1,7 +1,7 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { CustomerStatus } from 'CRM/Domain/customer.model';
-import { User, UserStatus } from 'CRM/Domain/user.model';
+import { CustomerStatus } from 'CRM/models/customer.model';
+import { User, UserStatus } from 'CRM/models/user.model';
 import * as request from 'supertest';
 
 import { getTestingModuleMetadata, initTestData } from '../tools';
@@ -40,15 +40,9 @@ describe('AuthController (e2e)', () => {
         );
 
         testUsers = {
-            active: users.find(
-                (user: User) => user.status === UserStatus.ACTIVE,
-            ),
-            disabled: users.find(
-                (user: User) => user.status === UserStatus.DISABLED,
-            ),
-            deleted: users.find(
-                (user: User) => user.status === UserStatus.DELETED,
-            ),
+            active: users.find((user: User) => user.status === UserStatus.ACTIVE),
+            disabled: users.find((user: User) => user.status === UserStatus.DISABLED),
+            deleted: users.find((user: User) => user.status === UserStatus.DELETED),
             disabledCustomer: users.find((user: User) =>
                 user.customer._id.equals(disabledCustomer.id),
             ),
@@ -59,10 +53,7 @@ describe('AuthController (e2e)', () => {
     });
 
     it('/ (GET)', () => {
-        return request(app.getHttpServer())
-            .get('/public/auth')
-            .expect(200)
-            .expect('hello');
+        return request(app.getHttpServer()).get('/public/auth').expect(200).expect('hello');
     });
 
     describe('/public/auth/login (POST)', () => {

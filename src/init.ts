@@ -4,8 +4,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AuthModule } from './Auth/auth.module';
 import { AuthService } from './Auth/auth.service';
-import { Customer, CustomerStatus } from './CRM/Domain/customer.model';
-import { User, UserStatus } from './CRM/Domain/user.model';
+import { Customer, CustomerStatus } from './CRM/models/customer.model';
+import { User, UserStatus } from './CRM/models/user.model';
 import { InfrastructureModule } from './Infrastructure/infrastructure.module';
 import { CustomerRepository } from './Infrastructure/persistence/customers.repository';
 import { UsersRepository } from './Infrastructure/persistence/users.repository';
@@ -20,16 +20,12 @@ async function bootstrap() {
 }
 
 async function init(app: INestApplicationContext) {
-    const infraModule: INestApplicationContext = app.select(
-        InfrastructureModule,
-    );
+    const infraModule: INestApplicationContext = app.select(InfrastructureModule);
     const authModule: INestApplicationContext = app.select(AuthModule);
 
     const authService: AuthService = authModule.get(AuthService);
 
-    const customerRepo: CustomerRepository = infraModule.get(
-        CustomerRepository,
-    );
+    const customerRepo: CustomerRepository = infraModule.get(CustomerRepository);
     const usersRepo: UsersRepository = infraModule.get(UsersRepository);
 
     // check if we have at least 1 customer

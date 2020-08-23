@@ -1,8 +1,9 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all",
-  "tabWidth": 4,
-  "semi": true,
-  "arrowParens": "always",
-  "endOfLine": "lf",
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 4,
+    "semi": true,
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "printWidth": 100
 }

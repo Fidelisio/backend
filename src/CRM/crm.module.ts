@@ -1,7 +1,11 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from 'CRM/Http/http.module';
+
+import { UsersController } from './controllers/users.controllers';
+import { CustomersService } from './services/customers.service';
+import { UsersService } from './services/users.service';
 
 @Module({
-    imports: [HttpModule],
+    controllers: [UsersController],
+    providers: [CustomersService, UsersService],
 })
 export class CrmModule {}

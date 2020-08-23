@@ -1,4 +1,7 @@
-POST http://localhost:3001/public/auth/login
+@baseUrl = http://localhost:3001
+
+###
+POST {{{{baseUrl}}/public/auth/login
 content-type: application/json
 
 {
@@ -8,11 +11,11 @@ content-type: application/json
 
 ###
 
-GET http://localhost:3001/users
+GET {{{{baseUrl}}/users
 
 ###
 
-POST http://localhost:3001/customers
+POST {{baseUrl}}/customers
 content-type: application/json
 
 {
@@ -21,4 +24,16 @@ content-type: application/json
 }
 
 ###
-GET http://localhost:3001/fadmin/init
+GET {{baseUrl}}/fadmin/init
+
+
+###
+
+POST {{baseUrl}}/public/register
+Content-Type: application/json
+
+{
+    "username": "tosssato {{$guid}}",
+    "password": "password",
+    "customerName": "test {{$guid}}"
+}

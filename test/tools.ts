@@ -1,15 +1,11 @@
-import {
-    INestApplication,
-    INestApplicationContext,
-    ModuleMetadata,
-} from '@nestjs/common';
+import { INestApplication, INestApplicationContext, ModuleMetadata } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from 'Auth/auth.module';
 import { AuthService } from 'Auth/auth.service';
 import { CrmModule } from 'CRM/crm.module';
-import { Customer, CustomerStatus } from 'CRM/Domain/customer.model';
-import { User, UserStatus } from 'CRM/Domain/user.model';
+import { Customer, CustomerStatus } from 'CRM/models/customer.model';
+import { User, UserStatus } from 'CRM/models/user.model';
 import { InfrastructureModule } from 'Infrastructure/infrastructure.module';
 import { CustomerRepository } from 'Infrastructure/persistence/customers.repository';
 import { UsersRepository } from 'Infrastructure/persistence/users.repository';
@@ -48,15 +44,9 @@ async function findOrCreateTestUsers(
     const passwordHash = authService.generatePassword('password');
 
     const customers = {
-        active: testCustomers.find(
-            (current) => current.status === CustomerStatus.ACTIVE,
-        ),
-        disabled: testCustomers.find(
-            (current) => current.status === CustomerStatus.DISABLED,
-        ),
-        deleted: testCustomers.find(
-            (current) => current.status === CustomerStatus.DELETED,
-        ),
+        active: testCustomers.find((current) => current.status === CustomerStatus.ACTIVE),
+        disabled: testCustomers.find((current) => current.status === CustomerStatus.DISABLED),
+        deleted: testCustomers.find((current) => current.status === CustomerStatus.DELETED),
     };
 
     const usersData = [
@@ -108,13 +98,11 @@ async function findOrCreateTestUsers(
 export async function initTestData(
     app: INestApplication,
 ): Promise<{ customers: Customer[]; users: User[] }> {
-    const infraModule: INestApplicationContext = app.select<
-        InfrastructureModule
-    >(InfrastructureModule);
-
-    const customers = await findOrCreateTestCustomers(
-        infraModule.get(CustomerRepository),
+    const infraModule: INestApplicationContext = app.select<InfrastructureModule>(
+        InfrastructureModule,
     );
+
+    const customers = await findOrCreateTestCustomers(infraModule.get(CustomerRepository));
     const users = await findOrCreateTestUsers(
         customers,
         infraModule.get(UsersRepository),
