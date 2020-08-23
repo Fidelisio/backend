@@ -13,7 +13,7 @@ export class CustomerRepository {
     }
 
     public async insertOne(customer: ICustomer): Promise<ICustomer> {
-        const newCustomer = new Customer(customer);
+        const newCustomer = new this.customerModel(customer);
 
         return newCustomer.save();
     }
