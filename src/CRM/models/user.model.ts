@@ -7,6 +7,7 @@ export enum UserStatus {
 }
 
 export interface IUser {
+    _id?: any;
     username: string;
     password?: string;
     status: string;

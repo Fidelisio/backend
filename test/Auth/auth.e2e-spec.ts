@@ -1,33 +1,21 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { INestApplication } from '@nestjs/common';
 import { CustomerStatus } from 'CRM/models/customer.model';
-import { User, UserStatus } from 'CRM/models/user.model';
+import { IUser, UserStatus } from 'CRM/models/user.model';
+import { initTestApplication, initTestData } from 'Helpers/tests.helper';
 import * as request from 'supertest';
-
-import { getTestingModuleMetadata, initTestData } from '../tools';
 
 describe('AuthController (e2e)', () => {
     let app: INestApplication;
     let testUsers: {
-        active: User;
-        disabled: User;
-        deleted: User;
-        disabledCustomer: User;
-        deletedCustomer: User;
+        active: IUser;
+        disabled: IUser;
+        deleted: IUser;
+        disabledCustomer: IUser;
+        deletedCustomer: IUser;
     };
 
     beforeAll(async () => {
-        const moduleFixture: TestingModule = await Test.createTestingModule(
-            getTestingModuleMetadata(),
-        ).compile();
-
-        app = moduleFixture.createNestApplication();
-        app.useGlobalPipes(
-            new ValidationPipe({
-                transform: true,
-                whitelist: true,
-            }),
-        );
+        app = await initTestApplication();
 
         await app.init();
 
@@ -40,20 +28,16 @@ describe('AuthController (e2e)', () => {
         );
 
         testUsers = {
-            active: users.find((user: User) => user.status === UserStatus.ACTIVE),
-            disabled: users.find((user: User) => user.status === UserStatus.DISABLED),
-            deleted: users.find((user: User) => user.status === UserStatus.DELETED),
-            disabledCustomer: users.find((user: User) =>
-                user.customer._id.equals(disabledCustomer.id),
+            active: users.find((user: IUser) => user.status === UserStatus.ACTIVE),
+            disabled: users.find((user: IUser) => user.status === UserStatus.DISABLED),
+            deleted: users.find((user: IUser) => user.status === UserStatus.DELETED),
+            disabledCustomer: users.find((user: IUser) =>
+                user.customer._id.equals(disabledCustomer._id),
             ),
-            deletedCustomer: users.find((user: User) =>
-                user.customer._id.equals(deletedCustomer.id),
+            deletedCustomer: users.find((user: IUser) =>
+                user.customer._id.equals(deletedCustomer._id),
             ),
         };
-    });
-
-    it('/ (GET)', () => {
-        return request(app.getHttpServer()).get('/public/auth').expect(200).expect('hello');
     });
 
     describe('/public/auth/login (POST)', () => {
@@ -144,7 +128,5 @@ describe('AuthController (e2e)', () => {
         });
     });
 
-    afterAll(async () => {
-        await app.close();
-    });
+    afterAll(async () => await app.close());
 });

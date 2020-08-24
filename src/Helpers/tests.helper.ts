@@ -1,18 +1,20 @@
 import { INestApplication, INestApplicationContext, ModuleMetadata } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
 import { AuthModule } from 'Auth/auth.module';
 import { AuthService } from 'Auth/auth.service';
 import { CrmModule } from 'CRM/crm.module';
-import { Customer, CustomerStatus } from 'CRM/models/customer.model';
-import { User, UserStatus } from 'CRM/models/user.model';
+import { CustomerStatus, ICustomer } from 'CRM/models/customer.model';
+import { IUser, UserStatus } from 'CRM/models/user.model';
+import { ICustomerRepository } from 'CRM/repositories/customers.repository';
+import { IUsersRepository } from 'CRM/repositories/users.repository';
+import { init } from 'Helpers/init.helper';
 import { InfrastructureModule } from 'Infrastructure/infrastructure.module';
-import { CustomerRepository } from 'Infrastructure/persistence/customers.repository';
-import { UsersRepository } from 'Infrastructure/persistence/users.repository';
 
 async function findOrCreateTestCustomers(
-    customerRepository: CustomerRepository,
-): Promise<Customer[]> {
+    customerRepository: ICustomerRepository,
+): Promise<ICustomer[]> {
     const customersData = [
         { name: 'test.customer', status: CustomerStatus.ACTIVE },
         { name: 'test.disabled.customer', status: CustomerStatus.DISABLED },
@@ -27,7 +29,7 @@ async function findOrCreateTestCustomers(
                 name: customerData.name,
                 status: customerData.status,
                 isAdmin: false,
-            } as Customer);
+            } as ICustomer);
         }
 
         customers.push(customer);
@@ -37,10 +39,10 @@ async function findOrCreateTestCustomers(
 }
 
 async function findOrCreateTestUsers(
-    testCustomers: Customer[],
-    userRepository: UsersRepository,
+    testCustomers: ICustomer[],
+    userRepository: IUsersRepository,
     authService: AuthService,
-): Promise<User[]> {
+): Promise<IUser[]> {
     const passwordHash = authService.generatePassword('password');
 
     const customers = {
@@ -86,7 +88,7 @@ async function findOrCreateTestUsers(
                 password: passwordHash,
                 status: userData.status,
                 customer: userData.customer,
-            } as User);
+            } as IUser);
         }
 
         users.push(user);
@@ -97,15 +99,15 @@ async function findOrCreateTestUsers(
 
 export async function initTestData(
     app: INestApplication,
-): Promise<{ customers: Customer[]; users: User[] }> {
+): Promise<{ customers: ICustomer[]; users: IUser[] }> {
     const infraModule: INestApplicationContext = app.select<InfrastructureModule>(
         InfrastructureModule,
     );
 
-    const customers = await findOrCreateTestCustomers(infraModule.get(CustomerRepository));
+    const customers = await findOrCreateTestCustomers(infraModule.get(ICustomerRepository));
     const users = await findOrCreateTestUsers(
         customers,
-        infraModule.get(UsersRepository),
+        infraModule.get(IUsersRepository),
         app.select(AuthModule).get(AuthService),
     );
 
@@ -135,4 +137,12 @@ export function getTestingModuleMetadata(): ModuleMetadata {
             CrmModule,
         ],
     };
+}
+
+export async function initTestApplication(): Promise<INestApplication> {
+    const moduleFixture: TestingModule = await Test.createTestingModule(
+        getTestingModuleMetadata(),
+    ).compile();
+
+    return init(moduleFixture.createNestApplication());
 }

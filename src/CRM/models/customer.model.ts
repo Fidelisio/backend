@@ -5,6 +5,7 @@ export enum CustomerStatus {
 }
 
 export interface ICustomer {
+    _id?: any;
     name: string;
     status: CustomerStatus;
     isAdmin: boolean;
