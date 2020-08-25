@@ -36,8 +36,6 @@ describe('Registration (e2e)', () => {
                 });
         });
 
-        it('should be able to login after a successfull registration', () => {});
-
         describe('should fail due to', () => {
             it('same username twice', async () => {
                 const twiceData = {
@@ -76,6 +74,7 @@ describe('Registration (e2e)', () => {
 
                 expect(secondInsert.status).toBe(400);
             });
+
             it('missing username', () => {
                 return request(app.getHttpServer())
                     .post('/public/register')
@@ -104,6 +103,7 @@ describe('Registration (e2e)', () => {
                         expect(status).toBe(400);
                     });
             });
+
             it('missing password', () => {
                 return request(app.getHttpServer())
                     .post('/public/register')
