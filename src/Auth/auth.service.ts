@@ -2,21 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDTO } from 'Auth/login.dto';
 import * as bcrypt from 'bcrypt';
-import { CustomerStatus } from 'CRM/Domain/customer.model';
-import { UserStatus } from 'CRM/Domain/user.model';
-import { UsersRepository } from 'Infrastructure/persistence/users.repository';
+import { CustomerStatus } from 'CRM/models/customer.model';
+import { UserStatus } from 'CRM/models/user.model';
+import { IUsersRepository } from 'CRM/repositories/users.repository';
 
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly userRepository: UsersRepository,
+        private readonly userRepository: IUsersRepository,
         private readonly jwtService: JwtService,
     ) {}
 
-    public async validateUser(
-        username: string,
-        password: string,
-    ): Promise<any> {
+    public async validateUser(username: string, password: string): Promise<any> {
         const user = await this.userRepository.findByUsername(username, true);
 
         if (

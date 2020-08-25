@@ -1,0 +1,9 @@
+Features:
+    Registration:
+        ☐ usernameAvailability endpoint
+        ☐ customerAvailability endpoint
+
+Tests:
+    ☐ Implement faker.js
+    Registration:
+        ☐ test login after register
