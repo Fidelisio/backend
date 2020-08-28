@@ -6,6 +6,7 @@ import { AuthGuard } from 'Infrastructure/middlewares/auth.guard';
 export function init(app: INestApplication): INestApplication {
     app.useGlobalPipes(
         new ValidationPipe({
+            forbidUnknownValues: true,
             transform: true,
             whitelist: true,
         }),

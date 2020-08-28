@@ -1,5 +1,4 @@
-import { ICustomer } from 'CRM/models/customer.model';
-import { IUser, UserStatus } from 'CRM/models/user.model';
+import { ICustomer, IUser, UserStatus } from 'CRM/models';
 import { Document, Schema, Types } from 'mongoose';
 
 export class UserModel extends Document implements IUser {
