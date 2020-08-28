@@ -1,0 +1,19 @@
+Features:
+    Registration:
+        ☐ usernameAvailability endpoint
+        ☐ customerAvailability endpoint
+
+Tech:
+    ☐ Prettify imports using index.ts all over the place
+    ☐ Move authController to infra/presentation
+    ☐ implement helmet
+    ☐ implement winston/morgan ( cf : https://github.com/alexy4744/bytebin/blob/master/backend/src/main.ts#L33 )
+    ☐ Implement health check ( cf doc  terminus )
+    ☐ Move Signup to auth
+    ☐ Implement CORS
+
+Tests:
+    ☐ Implement faker.js
+    ☐ Global setup and teardown
+    Registration:
+        ☐ test login after register

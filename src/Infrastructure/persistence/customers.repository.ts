@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { ICustomer } from 'CRM/models/customer.model';
-import { ICustomerRepository } from 'CRM/repositories/customers.repository';
-import { CustomerModel } from 'Infrastructure/persistence/schemas/customer.schema';
+import { ICustomer } from 'CRM/models';
+import { ICustomerRepository } from 'CRM/repositories';
+import { CustomerModel } from 'Infrastructure/persistence/schemas';
 import { Model } from 'mongoose';
 
 export class CustomerRepository implements ICustomerRepository {

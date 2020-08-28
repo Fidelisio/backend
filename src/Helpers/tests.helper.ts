@@ -1,5 +1,5 @@
 import { INestApplication, INestApplicationContext, ModuleMetadata } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthModule } from 'Auth/auth.module';
@@ -43,7 +43,7 @@ async function findOrCreateTestUsers(
     userRepository: IUsersRepository,
     authService: AuthService,
 ): Promise<IUser[]> {
-    const passwordHash = authService.generatePassword('password');
+    const passwordHash = authService.generatePassword('1P@ssword!');
 
     const customers = {
         active: testCustomers.find((current) => current.status === CustomerStatus.ACTIVE),
@@ -117,19 +117,23 @@ export async function initTestData(
 export function getTestingModuleMetadata(): ModuleMetadata {
     return {
         imports: [
-            ConfigModule.forRoot({
-                isGlobal: true,
-            }),
+            ConfigModule.forRoot({ isGlobal: true }),
             MongooseModule.forRootAsync({
-                imports: [ConfigModule],
-                useFactory: async (configService: ConfigService) => ({
-                    uri: configService.get<string>('MONGODB_URI'),
-                    useNewUrlParser: true,
-                    useCreateIndex: true,
-                    useUnifiedTopology: true,
-                    useFindAndModify: true,
-                }),
-                inject: [ConfigService],
+                useFactory: async () => {
+                    let dbName = process.env.MONGODB_DATABASE_NAME;
+                    if ('production' != process.env.APP_ENV) {
+                        dbName = [process.env.NODE_ENV, process.env.APP_ENV, dbName].join('_');
+                    }
+
+                    return {
+                        uri: process.env.MONGODB_HOST,
+                        dbName,
+                        useNewUrlParser: true,
+                        useCreateIndex: true,
+                        useUnifiedTopology: true,
+                        useFindAndModify: true,
+                    };
+                },
             }),
             // business modules
             InfrastructureModule,

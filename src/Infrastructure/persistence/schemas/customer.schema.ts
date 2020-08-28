@@ -15,7 +15,7 @@ export class CustomerModel extends Document implements ICustomer {
 
 export const CustomerSchema = new Schema(
     {
-        name: { type: String, unique: true },
+        name: { type: String, unique: true, required: true },
         status: {
             type: String,
             default: CustomerStatus.ACTIVE,

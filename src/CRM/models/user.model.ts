@@ -1,4 +1,4 @@
-import { ICustomer } from 'CRM/models/customer.model';
+import { ICustomer } from 'CRM/models';
 
 export enum UserStatus {
     ACTIVE = 'ACTIVE',
